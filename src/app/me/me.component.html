@@ -1,1 +1,6 @@
 <p>me works!</p>
+<div class="user" *ngIf="userInfo">
+  <p>Welcome</p>
+  <p>{{ userInfo?.userDetails }}</p>
+  <p>{{ userInfo?.identityProvider }}</p>
+</div>

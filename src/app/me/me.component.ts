@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserInfo } from '../../models/user-info';
 
 @Component({
   selector: 'app-me',
@@ -7,9 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MeComponent implements OnInit {
 
-  constructor() { }
+  redirect: string = window.location.pathname;
+  userInfo: UserInfo | undefined = undefined;
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.userInfo = await this.getUserInfo();
   }
 
+  async getUserInfo() {
+    try {
+      const response = await fetch('/.auth/me');
+      const payload = await response.json();
+      const { clientPrincipal } = payload;
+      return clientPrincipal;
+    } catch (error) {
+      console.error('No profile could be found');
+      return undefined;
+    }
+  }
 }
