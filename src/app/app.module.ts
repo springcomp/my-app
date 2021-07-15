@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MeComponent } from './components/me/me.component';
 import { Err404Component } from './components/err404/err404.component';
 import { HomeComponent } from './components/home/home.component';
+import { AuthorizationGuard } from './core/authorizationGuard';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,9 @@ import { HomeComponent } from './components/home/home.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    AuthorizationGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

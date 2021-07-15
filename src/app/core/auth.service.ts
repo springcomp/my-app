@@ -1,4 +1,6 @@
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Injectable, OnInit, OnDestroy, Inject } from '@angular/core';
+import { resolve } from 'dns';
 import { UserInfo } from '../models/userInfo';
 
 @Injectable({
@@ -8,7 +10,9 @@ export class AuthService implements OnInit, OnDestroy {
 
   public clientPrincipal: UserInfo | undefined;
 
-  constructor() { }
+  constructor(
+    @Inject(DOCUMENT) private document: Document
+  ) { }
 
   async ngOnInit(){
     console.log('Auth.Service::ngOnInit()')
@@ -22,11 +26,15 @@ export class AuthService implements OnInit, OnDestroy {
   public getIsAuthenticated(): boolean {
     return this.getIsInRole('authenticated');
   }
-  public getIsRegistered(): boolean {
+  public getIsAuthorized(): boolean {
     return this.getIsInRole('registered');
   }
   public getIsInRole(roleName: string): boolean {
     return (this.clientPrincipal != undefined && this.clientPrincipal.userRoles.indexOf(roleName) != -1); 
+  }
+
+  public navigate(url: string): void {
+    this.document.location.href = url;
   }
 
   private async getClientPrincipal() {
