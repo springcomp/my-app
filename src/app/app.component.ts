@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserInfo } from '../models/user-info';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,21 +8,13 @@ import { UserInfo } from '../models/user-info';
 })
 export class AppComponent {
   title = 'my-app';
-  userInfo: UserInfo | undefined = undefined;
 
-  async ngOnInit() {
-    this.userInfo = await this.getUserInfo();
+  constructor(
+    public authService: AuthService
+  ){
   }
 
-  async getUserInfo() {
-    try {
-      const response = await fetch('/.auth/me');
-      const payload = await response.json();
-      const { clientPrincipal } = payload;
-      return clientPrincipal;
-    } catch (error) {
-      console.error('No profile could be found');
-      return undefined;
-    }
+  async ngOnInit() {
+    await this.authService.ngOnInit();
   }
 }

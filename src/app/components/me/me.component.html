@@ -1,0 +1,12 @@
+<p>me works!</p>
+<div class="user" *ngIf="authService.getIsAuthenticated()">
+  <p>Welcome</p>
+  <p>{{ authService.clientPrincipal?.userDetails }}</p>
+  <p>{{ authService.clientPrincipal?.identityProvider }}</p>
+
+  <ul>
+    <ng-container *ngFor="let userRole of authService.clientPrincipal?.userRoles">
+      <li>{{ userRole }}</li>
+    </ng-container>
+  </ul>
+</div>
