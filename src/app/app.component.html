@@ -2,7 +2,7 @@
 <nav>
   <a routerLink="/home" routerLinkActive="active">Home</a>
   <ng-container *ngIf="!userInfo; else logout">
-      <a href="/.auth/login/twitter?post_login_redirect_uri=/me">Login</a>
+      <a href="/.auth/login/github?post_login_redirect_uri=/me">Login</a>
       <a href="/login?post_login_redirect_uri=/me">Login</a>
   </ng-container>
   <ng-template #logout>
