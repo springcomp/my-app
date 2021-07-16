@@ -1,12 +1,11 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, OnInit, OnDestroy, Inject } from '@angular/core';
-import { resolve } from 'dns';
+import { Injectable, OnInit, Inject } from '@angular/core';
 import { UserInfo } from '../models/userInfo';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit, OnDestroy {
+export class AuthService implements OnInit {
 
   public clientPrincipal: UserInfo | undefined;
 
@@ -17,10 +16,6 @@ export class AuthService implements OnInit, OnDestroy {
   async ngOnInit(){
     console.log('Auth.Service::ngOnInit()')
     this.clientPrincipal = await this.getClientPrincipal();
-  }
-
-  ngOnDestroy(): void {
-    console.log('Auth.Service::ngOnDestroy()')
   }
 
   public getIsAuthenticated(): boolean {

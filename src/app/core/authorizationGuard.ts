@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, Route, CanActivate, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
@@ -11,31 +11,35 @@ export class AuthorizationGuard implements CanActivate, CanLoad {
     private authService: AuthService) {
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.checkUser(route.url[0].path);
   }
 
-  canLoad(state: Route): boolean {
+  canLoad(state: Route): Observable<boolean> {
     return this.checkUser();
   }
 
-  private checkUser(route?: string): boolean {
-    console.log('AuthorizationGuard::checkUser()')
-    console.log(route);
-    const isAuthorized = this.authService.getIsAuthorized();
-    console.log(isAuthorized);
-    if (!isAuthorized) {
-      console.log('navigate...');
-      var redirect: string = '/.auth/login/github'
-      if (route != null) {
-        redirect += `?post_login_redirect_uri=/${route}`;
+  private checkUser(route?: string): Observable<boolean> {
+    var promise = this.authService.ngOnInit();
+    const observable = from(promise);
+    return observable.pipe(map(() => {
+      console.log('AuthorizationGuard::checkUser()')
+      console.log(route);
+      const isAuthorized = this.authService.getIsAuthorized();
+      console.log(isAuthorized);
+      if (!isAuthorized) {
+        console.log('navigate...');
+        var redirect: string = '/.auth/login/github'
+        if (route != null) {
+          redirect += `?post_login_redirect_uri=/${route}`;
+        }
+        console.log(redirect);
+        this.authService.navigate(redirect);
+        console.log('navigated...');
+        return false;
       }
-      console.log(redirect);
-      this.authService.navigate(redirect);
-      console.log('navigated...');
-      return false;
-    }
 
-    return true;
+      return true;
+    }));
   }
 }
