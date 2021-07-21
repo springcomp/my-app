@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../app/core/auth.service'
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +10,16 @@ import { AuthService } from '../app/core/auth.service'
 export class AppComponent {
   title = 'my-app';
 
+  public message: string | null = null;
+
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
+    public messageService: MessageService
   ){
   }
 
   async ngOnInit() {
     await this.authService.ngOnInit();
+    this.message = await this.messageService.getMessage();
   }
 }
