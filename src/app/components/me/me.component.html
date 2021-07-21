@@ -10,3 +10,9 @@
     </ng-container>
   </ul>
 </div>
+<ng-container *ngIf="authService.getIsAuthorized(); else notAuthorized">
+  <p>Authorized! 😃</p>
+</ng-container>
+<ng-template #notAuthorized>
+  <p>Not Authorized 😢</p>
+</ng-template>

@@ -23,19 +23,13 @@ export class AuthorizationGuard implements CanActivate, CanLoad {
     var promise = this.authService.ngOnInit();
     const observable = from(promise);
     return observable.pipe(map(() => {
-      console.log('AuthorizationGuard::checkUser()')
-      console.log(route);
-      const isAuthorized = this.authService.getIsAuthorized();
-      console.log(isAuthorized);
-      if (!isAuthorized) {
-        console.log('navigate...');
+      const isAuthenticated = this.authService.getIsAuthenticated();
+      if (!isAuthenticated) {
         var redirect: string = '/.auth/login/github'
         if (route != null) {
           redirect += `?post_login_redirect_uri=/${route}`;
         }
-        console.log(redirect);
         this.authService.navigate(redirect);
-        console.log('navigated...');
         return false;
       }
 
