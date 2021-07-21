@@ -28,8 +28,10 @@ namespace FunctionApp
         ["message"] = "Hello, world! This function was called programatically.",
       };
 
+
       await Task.CompletedTask;
       return new OkObjectResult(dictionary);
+      //return new StatusCodeResult(StatusCodes.Status401Unauthorized);
     }
   }
 }
