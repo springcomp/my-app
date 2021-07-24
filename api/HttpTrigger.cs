@@ -45,7 +45,10 @@ namespace FunctionApp
 
       var identity = Parse(req);
       foreach (var claim in identity.Claims)
+      {
+        log.LogTrace($"{claim.Type}: {claim.Value}");
         dictionary.Add(claim.Type, claim.Value);
+      }
 
       await Task.CompletedTask;
       return new OkObjectResult(dictionary);
