@@ -10,12 +10,8 @@ export class MessageService {
   public async getMessage(): Promise<string> {
     const response = await fetch("/api/message");
     const payload = await response.json();
-    const { message } = payload;
-    return message;
-
-    //return new Promise((resolve, reject) => {
-    //  resolve("Hello, world!");
-    //  reject("");
-    //});
+    return JSON.stringify(payload);
+    //const { message } = payload;
+    //return message;
   }
 }
