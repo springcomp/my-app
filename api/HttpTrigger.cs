@@ -12,6 +12,9 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 
 namespace FunctionApp
 {
@@ -27,13 +30,12 @@ namespace FunctionApp
 
     [FunctionName("HttpTrigger")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "message")] HttpRequestMessage req,
-        ClaimsPrincipal identity,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "message")] HttpRequest req,
         ILogger log)
     {
       log.LogInformation("C# HTTP trigger function processed a request.");
 
-      string name = "World!"; // req.Query["name"];
+      string name = req.Query["name"];
 
       var dictionary = new Dictionary<string, string>()
       {
@@ -41,24 +43,47 @@ namespace FunctionApp
         ["message"] = "Hello, world! This function was called programatically.",
       };
 
+      var identity = Parse(req);
       foreach (var claim in identity.Claims)
         dictionary.Add(claim.Type, claim.Value);
-
-      var context = (DefaultHttpContext)req.Properties["HttpContext"];
-      var host = new Uri(context.Request.Scheme + "://" + context.Request.Host.Value, UriKind.Absolute);
-      var auth = new Uri(host, "/.auth/me");
-
-      var client = clientFactory_.CreateClient("client");
-      var result = await client.GetAsync(auth);
-      var response = await result.Content.ReadAsStringAsync();
-
-      dictionary.Add("host", host.OriginalString);
-      dictionary.Add("auth", auth.OriginalString);
-      dictionary.Add(".auth/me", response);
 
       await Task.CompletedTask;
       return new OkObjectResult(dictionary);
       //return new StatusCodeResult(StatusCodes.Status401Unauthorized);
+    }
+    private class ClientPrincipal
+    {
+      public string IdentityProvider { get; set; }
+      public string UserId { get; set; }
+      public string UserDetails { get; set; }
+      public IEnumerable<string> UserRoles { get; set; }
+    }
+
+    public static ClaimsPrincipal Parse(HttpRequest req)
+    {
+      var principal = new ClientPrincipal();
+
+      if (req.Headers.TryGetValue("x-ms-client-principal", out var header))
+      {
+        var data = header[0];
+        var decoded = Convert.FromBase64String(data);
+        var json = Encoding.ASCII.GetString(decoded);
+        principal = System.Text.Json.JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+      }
+
+      principal.UserRoles = principal.UserRoles?.Except(new string[] { "anonymous" }, StringComparer.CurrentCultureIgnoreCase);
+
+      if (!principal.UserRoles?.Any() ?? true)
+      {
+        return new ClaimsPrincipal();
+      }
+
+      var identity = new ClaimsIdentity(principal.IdentityProvider);
+      identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, principal.UserId));
+      identity.AddClaim(new Claim(ClaimTypes.Name, principal.UserDetails));
+      identity.AddClaims(principal.UserRoles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+      return new ClaimsPrincipal(identity);
     }
   }
 }
