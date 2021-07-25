@@ -1,6 +1,7 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SpringComp.Functions.Extensions.StaticWebApps;
 
 [assembly: FunctionsStartup(typeof(FunctionApp.Startup))]
 
@@ -25,6 +26,8 @@ namespace FunctionApp
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         client.DefaultRequestHeaders.Add("User-Agent", "dotnet-core/3.1");
       });
+
+      services.AddStaticWebApps();
     }
   }
 

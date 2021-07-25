@@ -9,7 +9,6 @@ export class MessageService {
 
   public async getMessage(): Promise<string> {
     const response = await fetch("/api/message");
-    console.log(response);
     const payload = await response.json();
     return JSON.stringify(payload);
     //const { message } = payload;
