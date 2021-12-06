@@ -6,7 +6,7 @@
     },
     {
       "route": "/login",
-      "redirect": "/.auth/login/github?post_login_redirect_uri=/me"
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=/me"
     },
     {
       "route": "/logout",
@@ -17,7 +17,7 @@
       "statusCode": 404
     },
     {
-      "route": "/.auth/login/aad",
+      "route": "/.auth/login/github",
       "statusCode": 404
     }
   ],
