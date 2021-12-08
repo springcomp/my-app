@@ -26,7 +26,7 @@ namespace FunctionApp
 
     [FunctionName("HttpTrigger")]
     public async Task<HttpResponseMessage> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "message")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "claims")] HttpRequest req,
         [UserInfo] ClaimsPrincipal identity,
         ILogger log)
     {

@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
+export class ClaimsService {
 
   constructor() { }
 
-  public async getMessage(): Promise<string> {
-    const response = await fetch("/api/message");
+  public async getClaims(): Promise<string> {
+    const response = await fetch("/api/claims");
     const payload = await response.json();
     return JSON.stringify(payload);
     //const { message } = payload;
