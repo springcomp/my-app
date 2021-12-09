@@ -11,7 +11,5 @@ export class ClaimsService {
     const response = await fetch("/api/claims");
     const payload = await response.json();
     return JSON.stringify(payload);
-    //const { message } = payload;
-    //return message;
   }
 }
