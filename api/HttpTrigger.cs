@@ -42,6 +42,8 @@ public class HttpTrigger
       }
     }
 
+    dictionary.Add("Variable", configuration_["AppSetting"] ?? "No app setting found.");
+
     string output;
     using (var stream = new MemoryStream())
     {
